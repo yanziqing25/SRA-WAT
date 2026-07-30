@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="328" viewBox="0 0 520 328">
+<style>
+text{font-family:Arial,Helvetica,sans-serif;fill:#263238}
+.axis{font-size:10px;fill:#607d8b}
+.label{font-size:10.8px}
+.value{font-size:9.4px;font-weight:700}
+.legend{font-size:10px}
+.grid{stroke:#d9e2e8;stroke-width:0.65}
+.base{stroke:#8fa6b5;stroke-width:0.85}
+</style>
+<rect x="0" y="0" width="100%" height="100%" fill="none"/>
+<rect x="266" y="10" width="11" height="8" fill="#9fc7dd"/>
+<text x="282" y="18" class="legend">+Wildlife-LT - Base</text>
+<rect x="393" y="10" width="11" height="8" fill="#1f5f85"/>
+<text x="409" y="18" class="legend">+Our - +Wildlife-LT</text>
+<line x1="128.0" y1="29" x2="128.0" y2="307" class="grid"/>
+<text x="128.0" y="321" text-anchor="middle" class="axis">0</text>
+<line x1="204.0" y1="29" x2="204.0" y2="307" class="grid"/>
+<text x="204.0" y="321" text-anchor="middle" class="axis">1</text>
+<line x1="280.1" y1="29" x2="280.1" y2="307" class="grid"/>
+<text x="280.1" y="321" text-anchor="middle" class="axis">2</text>
+<line x1="356.1" y1="29" x2="356.1" y2="307" class="grid"/>
+<text x="356.1" y="321" text-anchor="middle" class="axis">3</text>
+<line x1="432.2" y1="29" x2="432.2" y2="307" class="grid"/>
+<text x="432.2" y="321" text-anchor="middle" class="axis">4</text>
+<line x1="128" y1="307" x2="474.0" y2="307" class="base"/>
+<text x="119" y="48" text-anchor="end" class="label">ViT-Tiny</text>
+<rect x="128" y="36" width="70.7" height="16" fill="#9fc7dd"/>
+<rect x="198.7" y="36" width="143.7" height="16" fill="#1f5f85"/>
+<text x="346.4" y="47.5" class="value">+2.82</text>
+<text x="119" y="78" text-anchor="end" class="label">SpikeTrack
+</text>
+<rect x="128" y="66" width="51.7" height="16" fill="#9fc7dd"/>
+<rect x="179.7" y="66" width="100.4" height="16" fill="#1f5f85"/>
+<text x="284.1" y="77.5" class="value">+2.00</text>
+<text x="119" y="108" text-anchor="end" class="label">SSTrack</text>
+<rect x="128" y="96" width="3.8" height="16" fill="#9fc7dd"/>
+<rect x="131.8" y="96" width="186.3" height="16" fill="#1f5f85"/>
+<text x="322.1" y="107.5" class="value">+2.50</text>
+<text x="119" y="138" text-anchor="end" class="label">AsymTrack-T</text>
+<rect x="128" y="126" width="60.1" height="16" fill="#9fc7dd"/>
+<rect x="188.1" y="126" width="133.1" height="16" fill="#1f5f85"/>
+<text x="325.2" y="137.5" class="value">+2.54</text>
+<text x="119" y="168" text-anchor="end" class="label">MCITrack-B</text>
+<rect x="128" y="156" width="203.8" height="16" fill="#9fc7dd"/>
+<rect x="331.8" y="156" width="99.6" height="16" fill="#1f5f85"/>
+<text x="435.4" y="167.5" class="value">+3.99</text>
+<text x="119" y="198" text-anchor="end" class="label">LMTrack</text>
+<rect x="128" y="186" width="113.3" height="16" fill="#9fc7dd"/>
+<rect x="241.3" y="186" width="35.7" height="16" fill="#1f5f85"/>
+<text x="281.0" y="197.5" class="value">+1.96</text>
+<text x="119" y="228" text-anchor="end" class="label">ODTrack-B</text>
+<rect x="128" y="216" width="108.7" height="16" fill="#9fc7dd"/>
+<rect x="236.7" y="216" width="60.8" height="16" fill="#1f5f85"/>
+<text x="301.6" y="227.5" class="value">+2.23</text>
+<text x="119" y="258" text-anchor="end" class="label">Tracking Mamba</text>
+<rect x="128" y="246" width="162.0" height="16" fill="#9fc7dd"/>
+<rect x="290.0" y="246" width="75.3" height="16" fill="#1f5f85"/>
+<text x="369.3" y="257.5" class="value">+3.12</text>
+<text x="119" y="288" text-anchor="end" class="label">OSTrack-B</text>
+<rect x="128" y="276" width="150.6" height="16" fill="#9fc7dd"/>
+<rect x="278.6" y="276" width="31.9" height="16" fill="#1f5f85"/>
+<text x="314.5" y="287.5" class="value">+2.40</text>
+</svg>
