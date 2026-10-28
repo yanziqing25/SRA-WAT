@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="SRA-WAT: training-time structure- and region-aware domain adaptation for wild animal tracking, with the Wildlife-LT dataset and results across nine trackers on WATB.">
     <title>Toward a General Structure- and Region-Aware Domain Adaptation Framework for Wild Animal Tracking</title>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -25,8 +26,14 @@
     <div class="hero">
         <p class="eyebrow">RGB Single-Object Tracking for Wild Animal Domain Adaptation</p>
         <h1>Toward a General Structure- and Region-Aware Domain Adaptation Framework for Wild Animal Tracking</h1>
-        <p class="authors">Ziqing Yan, Fasheng Wang, Mengyin Wang, Weixin Kong, Ganggang Huang, Zhan Shi, Haojie Li</p>
-        <p class="affiliation">Dalian Minzu University; Shandong University of Science and Technology</p>
+        <p class="authors">
+            <span>Ziqing Yan</span>,
+            <span>Fasheng Wang<sup>*</sup></span>,
+            <span>Mengyin Wang</span>,
+            <span>Zhan Shi</span>,
+            <span>Fangmei Chen</span>,
+            <span>Haojie Li</span>
+        </p>
         <p class="hero-copy">
             SRA-WAT is a general, tracker-agnostic, training-only domain adaptation framework for wild animal tracking.
             Its complementary SCAH and RGTA modules determine where and what features to align, while Wildlife-LT
@@ -71,7 +78,7 @@
             Scharr-gradient cues and confines adversarial alignment to search representations, while the Region-guided
             Token Alignment (RGTA) module conducts fine-grained alignment for foreground, boundary, and background
             prototypes. Jointly, these two modules explicitly resolve the core tracking-adaptation problems of where and
-            what features to align. Notably, both modules are removed during inference, leaving the base tracker's
+            what features to align. Notably, both modules are removed during inference, leaving the base tracker’s
             inference pipeline, parameter size, floating-point operations (FLOPs), and frames per second (FPS)
             completely unaltered. To facilitate supervised target-domain adaptation for WAT, we further construct
             Wildlife-LT, a large-scale labeled long-term wildlife tracking dataset. It comprises 251 video sequences,
@@ -434,6 +441,24 @@
             </article>
         </div>
 
+        <section class="dataset-subsection" id="annotation">
+            <div class="section-kicker">Annotation</div>
+            <h2>Annotation Protocol and Quality Control</h2>
+            <p>
+                Wildlife-LT was annotated by eight annotators and reviewed by a five-member checking team. Each
+                sequence was assigned to one annotator and subsequently checked against the annotation protocol.
+                Annotations that failed to meet the protocol were returned for correction and rechecked. Annotation,
+                review, and correction took approximately eight months. Videos from WATB, AnimalTrack, and
+                Wildlife2024 were excluded during dataset collection.
+            </p>
+            <p>
+                The annotated target is the same individual throughout each sequence, with a fixed definition of
+                either the whole animal or a designated body part. Bounding boxes tightly enclose the visible target
+                region. Fully occluded and out-of-view frames retain the last visible box as a placeholder and carry
+                the corresponding absence flag.
+            </p>
+        </section>
+
         <div class="download-inline" id="download">
             <div>
                 <h3>Download</h3>
@@ -648,7 +673,7 @@
         <h2>BibTeX</h2>
         <pre><code>@misc{srawat2026wildlifelt,
   title  = {Toward a General Structure- and Region-Aware Domain Adaptation Framework for Wild Animal Tracking},
-  author = {Yan, Ziqing and Wang, Fasheng and Wang, Mengyin and Kong, Weixin and Huang, Ganggang and Shi, Zhan and Li, Haojie},
+  author = {Yan, Ziqing and Wang, Fasheng and Wang, Mengyin and Shi, Zhan and Chen, Fangmei and Li, Haojie},
   year   = {2026},
   url    = {https://yanziqing25.github.io/SRA-WAT},
   note   = {Project page and code repository}

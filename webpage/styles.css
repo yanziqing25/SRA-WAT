@@ -138,14 +138,13 @@ h3 {
 }
 
 .authors {
-    margin: 0;
+    margin: 0 0 24px;
     font-size: 1.12rem;
     font-weight: 700;
 }
 
-.affiliation {
-    margin: 2px 0 24px;
-    color: var(--muted);
+.authors span {
+    display: inline-block;
 }
 
 .hero-copy {
