@@ -1124,6 +1124,8 @@ h1 {
     width: min(1120px, 100vw - 32px);
     max-width: none;
     max-height: calc(100vh - 32px);
+    /* The Next slide-in starts 32px to the right; clip it instead of showing a scrollbar. */
+    overflow-x: hidden;
     padding: 0;
     border: 0;
     background: var(--paper);
