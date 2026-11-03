@@ -4,685 +4,835 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="SRA-WAT: training-time structure- and region-aware domain adaptation for wild animal tracking, with the Wildlife-LT dataset and results across nine trackers on WATB.">
+    <meta name="theme-color" content="#FAFAF8">
     <title>Toward a General Structure- and Region-Aware Domain Adaptation Framework for Wild Animal Tracking</title>
+    <script src="https://cdn.jsdelivr.net/npm/hyphenopoly@6.1.0/min/Hyphenopoly_Loader.js"
+            integrity="sha256-QNzTgpBSL71+jbFIEPo813tBgTa8UxZevko4CGD1yts=" crossorigin="anonymous"></script>
+    <script>
+        // Hyphenate the justified body text in browsers that lack an English hyphenation dictionary.
+        Hyphenopoly.config({
+            require: {en: "Supercalifragilisticexpialidocious"},
+            fallbacks: {en: "en-us"},
+            setup: {
+                CORScredentials: "omit",
+                hide: "element",
+                selectors: {".prose p, .notes-list p, .hero-summary, .glossary-intro": {}}
+            }
+        });
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
     <link rel="stylesheet" href="styles.css">
+    <script src="main.js" defer></script>
 </head>
 <body>
-<a class="skip-link" href="#main-content">Skip to main content</a>
-<header class="site-header" id="paper">
-    <nav class="nav" aria-label="Primary navigation">
-        <a class="brand" href="#paper">SRA-WAT</a>
-        <div class="nav-links">
-            <a href="#abstract">Abstract</a>
-            <a href="#method">Method</a>
-            <a href="#results">Results</a>
-            <a href="#dataset">Dataset</a>
-            <a href="#gallery">Gallery</a>
-            <a href="#attributes">Attributes</a>
-            <a href="#bibtex">Citation</a>
-        </div>
-    </nav>
+<a class="skip-link" href="#main">Skip to main content</a>
 
-    <div class="hero">
-        <p class="eyebrow">RGB Single-Object Tracking for Wild Animal Domain Adaptation</p>
-        <h1>Toward a General Structure- and Region-Aware Domain Adaptation Framework for Wild Animal Tracking</h1>
-        <p class="authors">
-            <span>Ziqing Yan</span>,
-            <span>Fasheng Wang<sup>*</sup></span>,
-            <span>Mengyin Wang</span>,
-            <span>Zhan Shi</span>,
-            <span>Fangmei Chen</span>,
-            <span>Haojie Li</span>
-        </p>
-        <p class="hero-copy">
-            SRA-WAT is a general, tracker-agnostic, training-only domain adaptation framework for wild animal tracking.
-            Its complementary SCAH and RGTA modules determine where and what features to align, while Wildlife-LT
-            provides continuous target-domain trajectories for supervised adaptation.
-        </p>
-        <div class="button-row" aria-label="Project links">
-            <a class="button primary" href="#paper">
-                <svg class="button-icon" viewBox="0 0 576 512" aria-hidden="true">
-                    <path d="M96 0C60.7 0 32 28.7 32 64l0 384c0 35.3 28.7 64 64 64l80 0 0-112c0-35.3 28.7-64 64-64l176 0 0-165.5c0-17-6.7-33.3-18.7-45.3L290.7 18.7C278.7 6.7 262.5 0 245.5 0L96 0zM357.5 176L264 176c-13.3 0-24-10.7-24-24L240 58.5 357.5 176zM240 380c-11 0-20 9-20 20l0 128c0 11 9 20 20 20s20-9 20-20l0-28 12 0c33.1 0 60-26.9 60-60s-26.9-60-60-60l-32 0zm32 80l-12 0 0-40 12 0c11 0 20 9 20 20s-9 20-20 20zm96-80c-11 0-20 9-20 20l0 128c0 11 9 20 20 20l32 0c28.7 0 52-23.3 52-52l0-64c0-28.7-23.3-52-52-52l-32 0zm20 128l0-88 12 0c6.6 0 12 5.4 12 12l0 64c0 6.6-5.4 12-12 12l-12 0zm88-108l0 128c0 11 9 20 20 20s20-9 20-20l0-44 28 0c11 0 20-9 20-20s-9-20-20-20l-28 0 0-24 28 0c11 0 20-9 20-20s-9-20-20-20l-48 0c-11 0-20 9-20 20z"/>
-                </svg>
-                Paper
-            </a>
-            <a class="button" href="https://github.com/yanziqing25/SRA-WAT" target="_blank" rel="noopener noreferrer">
-                <svg class="button-icon" viewBox="0 0 512 512" aria-hidden="true">
-                    <path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3 .3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5 .3-6.2 2.3zm44.2-1.7c-2.9 .7-4.9 2.6-4.6 4.9 .3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM252.8 8c-138.7 0-244.8 105.3-244.8 244 0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1 100-33.2 167.8-128.1 167.8-239 0-138.7-112.5-244-251.2-244zM105.2 352.9c-1.3 1-1 3.3 .7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3 .3 2.9 2.3 3.9 1.6 1 3.6 .7 4.3-.7 .7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3 .7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3 .7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/>
-                </svg>
-                Code
-            </a>
-            <a class="button" href="#dataset">
-                <svg class="button-icon" viewBox="0 0 448 512" aria-hidden="true">
-                    <path d="M448 205.8c-14.8 9.8-31.8 17.7-49.5 24-47 16.8-108.7 26.2-174.5 26.2S96.4 246.5 49.5 229.8c-17.6-6.3-34.7-14.2-49.5-24L0 288c0 44.2 100.3 80 224 80s224-35.8 224-80l0-82.2zm0-77.8l0-48C448 35.8 347.7 0 224 0S0 35.8 0 80l0 48c0 44.2 100.3 80 224 80s224-35.8 224-80zM398.5 389.8C351.6 406.5 289.9 416 224 416S96.4 406.5 49.5 389.8c-17.6-6.3-34.7-14.2-49.5-24L0 432c0 44.2 100.3 80 224 80s224-35.8 224-80l0-66.2c-14.8 9.8-31.8 17.7-49.5 24z"/>
-                </svg>
-                Dataset
-            </a>
-        </div>
-    </div>
+<header class="site-header">
+    <nav class="nav container" aria-label="Sections">
+        <a class="brand" href="#paper">SRA-WAT</a>
+        <ul class="nav-links">
+            <li><a href="#abstract">Abstract</a></li>
+            <li><a href="#method">Method</a></li>
+            <li><a href="#results">Results</a></li>
+            <li><a href="#dataset">Wildlife-LT</a></li>
+            <li><a href="#gallery">Gallery</a></li>
+            <li><a href="#attributes">Attributes</a></li>
+            <li><a href="#bibtex">Citation</a></li>
+        </ul>
+    </nav>
 </header>
 
-<main id="main-content">
-    <section class="section compact" id="abstract">
-        <div class="section-kicker">Abstract</div>
-        <h2>Abstract</h2>
-        <p>
-            Generic object trackers typically suffer severe performance degradation when directly deployed for wild
-            animal tracking (WAT), primarily due to significant cross-domain distribution shifts. Further compounding
-            the target localization challenge in WAT are non-rigid animal deformations, frequent target occlusions,
-            visually similar background distractors, and intricate natural scene environments. To address these issues,
-            we propose a Structure- and Region-Aware Domain Adaptation framework for WAT (SRA-WAT), a general,
-            tracker-agnostic adaptation paradigm designed exclusively for the training phase. Instead of developing a
-            novel tracking backbone, SRA-WAT enhances the performance of off-the-shelf trackers via two complementary
-            plug-and-play adaptation modules. Specifically, the Structural Cue Alignment Head (SCAH) injects
-            Scharr-gradient cues and confines adversarial alignment to search representations, while the Region-guided
-            Token Alignment (RGTA) module conducts fine-grained alignment for foreground, boundary, and background
-            prototypes. Jointly, these two modules explicitly resolve the core tracking-adaptation problems of where and
-            what features to align. Notably, both modules are removed during inference, leaving the base tracker’s
-            inference pipeline, parameter size, floating-point operations (FLOPs), and frames per second (FPS)
-            completely unaltered. To facilitate supervised target-domain adaptation for WAT, we further construct
-            Wildlife-LT, a large-scale labeled long-term wildlife tracking dataset. It comprises 251 video sequences,
-            covers 38 animal categories, and contains 392,362 manually annotated frames, with continuous target
-            trajectories enabling reliable template-search feature matching across long temporal intervals. Extensive
-            experiments on the WATB benchmark demonstrate that SRA-WAT consistently outperforms 9 representative base
-            trackers by an average of 2.62 in AUC and 3.67 in Precision. The evaluated trackers cover diverse mainstream
-            architectures, including single-stream, dual-stream, multi-stage, and state-space-based designs. The
-            universal performance gains across all tracker variants strongly validate the generalizability and
-            tracker-agnostic efficacy of our SRA-WAT framework.
-        </p>
+<main id="main">
+    <section class="hero" id="paper" aria-labelledby="title">
+        <div class="container">
+            <h1 id="title">Toward a General Structure- and Region-Aware Domain Adaptation Framework for Wild Animal Tracking</h1>
+            <div class="hero-body" data-state="scah">
+                <div class="hero-text">
+                    <p class="authors">
+                        <span>Ziqing Yan</span>,
+                        <span>Fasheng Wang<sup aria-hidden="true">*</sup><span class="visually-hidden"> (corresponding author)</span></span>,
+                        <span>Mengyin Wang</span>,
+                        <span>Zhan Shi</span>,
+                        <span>Fangmei Chen</span>,
+                        <span>Haojie Li</span>
+                    </p>
+                    <p class="author-note" aria-hidden="true">* Corresponding author</p>
+                    <p class="hero-summary">
+                        SRA-WAT is a tracker-agnostic, training-only domain adaptation framework for wild animal tracking. Its
+                        two alignment modules are removed after training, so the base tracker keeps its parameters, FLOPs and
+                        FPS.
+                    </p>
+                    <div class="button-row">
+                        <a class="button button-primary" href="#paper">
+                            <svg class="button-icon" viewBox="0 0 576 512" aria-hidden="true" focusable="false">
+                                <path d="M96 0C60.7 0 32 28.7 32 64l0 384c0 35.3 28.7 64 64 64l80 0 0-112c0-35.3 28.7-64 64-64l176 0 0-165.5c0-17-6.7-33.3-18.7-45.3L290.7 18.7C278.7 6.7 262.5 0 245.5 0L96 0zM357.5 176L264 176c-13.3 0-24-10.7-24-24L240 58.5 357.5 176zM240 380c-11 0-20 9-20 20l0 128c0 11 9 20 20 20s20-9 20-20l0-28 12 0c33.1 0 60-26.9 60-60s-26.9-60-60-60l-32 0zm32 80l-12 0 0-40 12 0c11 0 20 9 20 20s-9 20-20 20zm96-80c-11 0-20 9-20 20l0 128c0 11 9 20 20 20l32 0c28.7 0 52-23.3 52-52l0-64c0-28.7-23.3-52-52-52l-32 0zm20 128l0-88 12 0c6.6 0 12 5.4 12 12l0 64c0 6.6-5.4 12-12 12l-12 0zm88-108l0 128c0 11 9 20 20 20s20-9 20-20l0-44 28 0c11 0 20-9 20-20s-9-20-20-20l-28 0 0-24 28 0c11 0 20-9 20-20s-9-20-20-20l-48 0c-11 0-20 9-20 20z"/>
+                            </svg>
+                            Paper
+                        </a>
+                        <a class="button" href="https://github.com/yanziqing25/SRA-WAT" target="_blank" rel="noopener noreferrer">
+                            <svg class="button-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                                <path d="M6.766 11.328c-2.063-.25-3.516-1.734-3.516-3.656 0-.781.281-1.625.75-2.188-.203-.515-.172-1.609.063-2.062.625-.078 1.468.25 1.968.703.594-.187 1.219-.281 1.985-.281.765 0 1.39.094 1.953.265.484-.437 1.344-.765 1.969-.687.218.422.25 1.515.046 2.047.5.593.766 1.39.766 2.203 0 1.922-1.453 3.375-3.547 3.64.531.344.89 1.094.89 1.954v1.625c0 .468.391.734.86.547C13.781 14.359 16 11.53 16 8.03 16 3.61 12.406 0 7.984 0 3.563 0 0 3.61 0 8.031a7.88 7.88 0 0 0 5.172 7.422c.422.156.828-.125.828-.547v-1.25c-.219.094-.5.156-.75.156-1.031 0-1.64-.562-2.078-1.609-.172-.422-.36-.672-.719-.719-.187-.015-.25-.093-.25-.187 0-.188.313-.328.625-.328.453 0 .844.281 1.25.86.313.452.64.655 1.031.655s.641-.14 1-.5c.266-.265.47-.5.657-.656"/>
+                            </svg>
+                            Code<span class="visually-hidden"> on GitHub (opens in a new tab)</span>
+                        </a>
+                        <a class="button" href="#dataset">
+                            <svg class="button-icon" viewBox="0 0 448 512" aria-hidden="true" focusable="false">
+                                <path d="M448 205.8c-14.8 9.8-31.8 17.7-49.5 24-47 16.8-108.7 26.2-174.5 26.2S96.4 246.5 49.5 229.8c-17.6-6.3-34.7-14.2-49.5-24L0 288c0 44.2 100.3 80 224 80s224-35.8 224-80l0-82.2zm0-77.8l0-48C448 35.8 347.7 0 224 0S0 35.8 0 80l0 48c0 44.2 100.3 80 224 80s224-35.8 224-80zM398.5 389.8C351.6 406.5 289.9 416 224 416S96.4 406.5 49.5 389.8c-17.6-6.3-34.7-14.2-49.5-24L0 432c0 44.2 100.3 80 224 80s224-35.8 224-80l0-66.2c-14.8 9.8-31.8 17.7-49.5 24z"/>
+                            </svg>
+                            Wildlife-LT
+                        </a>
+                    </div>
+                </div>
+
+                <figure class="compare" aria-describedby="hero-caption">
+                    <div class="compare-frame" data-compare data-compare-labels="RGB|Scharr">
+                        <div class="compare-layer compare-layer-rgb">
+                            <img src="assets/dataset/kangaroo.jpg" width="1920" height="1080" fetchpriority="high"
+                                 alt="Three kangaroos standing on dry grass in front of dark bushland, a frame from Wildlife-LT.">
+                            <span class="compare-tag" aria-hidden="true">RGB</span>
+                        </div>
+                        <div class="compare-layer compare-layer-edge" data-when="scah">
+                            <img src="assets/hero/kangaroo-scharr.jpg" width="1920" height="1080"
+                                 alt="The same frame as a Scharr gradient-magnitude map, where the kangaroos' outlines appear as dark lines on a pale ground.">
+                            <span class="compare-tag" aria-hidden="true">Scharr<span class="tag-long"> gradient magnitude</span></span>
+                        </div>
+                        <div class="compare-layer compare-layer-edge" data-when="rgta">
+                            <img src="assets/dataset/kangaroo.jpg" width="1920" height="1080" alt="">
+                            <svg class="token-map" viewBox="0 0 1920 1080" preserveAspectRatio="xMaxYMid slice" role="img"
+                             aria-label="The same frame with RGTA's 16 by 16 search tokens around the kangaroo: foreground tokens over its box, a one-token boundary ring around them, and background tokens elsewhere."
+                             data-box="1310 488 402 480"></svg>
+                            <span class="compare-tag" aria-hidden="true">Token regions</span>
+                        </div>
+                        <label class="visually-hidden" for="compare-range">Divider between the RGB frame and the view on its right</label>
+                        <input class="compare-range" id="compare-range" type="range" min="0" max="100" step="1" value="50" data-js-only>
+                        <span class="compare-seam" aria-hidden="true">
+                            <span class="compare-handle" data-js-only>
+                                <svg viewBox="0 0 24 24" width="22" height="22" focusable="false">
+                                    <path d="M9 6 3 12l6 6M15 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </span>
+                    </div>
+                </figure>
+                <div class="hero-controls">
+                    <div class="chart-switch" role="group" aria-label="View on the right of the divider" data-switch data-js-only>
+                        <button type="button" value="scah" data-labels="RGB|Scharr" aria-pressed="true">SCAH</button>
+                        <button type="button" value="rgta" data-labels="RGB|Token regions" aria-pressed="false">RGTA</button>
+                    </div>
+                    <p class="hero-caption" id="hero-caption">
+                        <span data-when="scah"><span class="demo-kicker">SCAH: where to align.</span> The right side shows
+                            the Scharr gradient magnitude of this Wildlife-LT kangaroo frame, a structural cue SCAH injects into RGB
+                            tokens during training.</span><span data-when="rgta"><span class="demo-kicker">RGTA: what
+                            to align.</span> The right side shows the 16 × 16 search tokens RGTA groups around the kangaroo: green
+                            tokens overlap its box, a yellow one-token ring forms the boundary, and the rest are background. The
+                            search region is four times the target size, so it runs past the frame edge; the darkened strip on the
+                            left lies outside it.</span><span data-js-only> Drag the divider to compare.</span>
+                    </p>
+                </div>
+            </div>
+        </div>
     </section>
 
-    <section class="section compact" id="method">
-        <div class="section-kicker">Method</div>
-        <h2>Overall Framework</h2>
-        <p>
-            SRA-WAT performs supervised adaptation from generic source data to Wildlife-LT target data. Template-search
-            pairs from both domains pass through a shared backbone. SCAH processes the base tracker's template and
-            search representations, while RGTA operates on its unmodulated final search representation. This
-            backbone-independent design can be integrated into single-stream, dual-stream, multi-stage, and
-            state-space trackers.
-        </p>
-        <p>
-            SCAH injects multi-channel Scharr cues into RGB tokens through learnable modulation, confines adversarial
-            alignment to search representations, and uses source template-search pairs to preserve category information.
-            RGTA partitions search tokens into foreground, boundary, and background regions, aligns their prototype
-            distributions using multi-kernel MMD with source-domain stop-gradient anchors, and preserves
-            foreground-background separation. At inference, SCAH and RGTA are disabled, leaving the base tracker's
-            inference pipeline, parameter size, FLOPs, and FPS unchanged.
-        </p>
-
-        <figure class="framework-figure">
-            <img src="assets/figures/framework.svg"
-                 alt="Overview of SRA-WAT, showing joint source- and target-domain tracking supervision, the structural cue alignment head, and region-guided token alignment">
-            <figcaption>Overview of SRA-WAT. Source- and target-domain template-search pairs share the base tracker;
-                SCAH and RGTA provide complementary training-only adaptation objectives.
-            </figcaption>
-        </figure>
-
-        <ul class="framework-highlights" aria-label="SRA-WAT framework highlights">
-            <li><strong>Shared tracking backbone.</strong> Source-domain and Wildlife-LT template-search pairs train the
-                same base tracker with supervised localization objectives.
-            </li>
-            <li><strong>Complementary alignment.</strong> SCAH determines where alignment operates through
-                structure-guided search alignment, while RGTA determines what is aligned through foreground, boundary,
-                and background prototypes.
-            </li>
-            <li><strong>Zero inference overhead.</strong> SCAH and RGTA are disabled after training, preserving the base
-                tracker's original inference pipeline, parameter size, FLOPs, and FPS.
-            </li>
-        </ul>
+    <section class="section" id="abstract" aria-labelledby="abstract-title">
+        <div class="container section-grid">
+            <h2 id="abstract-title">Abstract</h2>
+            <div class="section-main prose">
+                <p>
+                    Generic object trackers typically suffer severe performance degradation when directly deployed for
+                    wild animal tracking (WAT), primarily due to significant cross-domain distribution shifts. Further
+                    compounding the target localization challenge in WAT are non-rigid animal deformations, frequent
+                    target occlusions, visually similar background distractors, and intricate natural scene
+                    environments. To address these issues, we propose a Structure- and Region-Aware Domain Adaptation
+                    framework for WAT (SRA-WAT), a general, tracker-agnostic adaptation paradigm designed exclusively
+                    for the training phase. Instead of developing a novel tracking backbone, SRA-WAT enhances the
+                    performance of off-the-shelf trackers via two complementary plug-and-play adaptation modules.
+                    Specifically, the Structural Cue Alignment Head (SCAH) injects Scharr-gradient cues and confines
+                    adversarial alignment to search representations, while the Region-guided Token Alignment (RGTA)
+                    module conducts fine-grained alignment for foreground, boundary, and background prototypes.
+                    Jointly, these two modules explicitly resolve the core tracking-adaptation problems of where and
+                    what features to align. Notably, both modules are removed during inference, leaving the base
+                    tracker’s inference pipeline, parameter size, floating-point operations (FLOPs), and frames per
+                    second (FPS) completely unaltered. To facilitate supervised target-domain adaptation for WAT, we
+                    further construct Wildlife-LT, a large-scale labeled long-term wildlife tracking dataset. It
+                    comprises 251 video sequences, covers 38 animal categories, and contains 392,362 manually annotated
+                    frames, with continuous target trajectories enabling reliable template-search feature matching
+                    across long temporal intervals. Extensive experiments on the WATB benchmark demonstrate that
+                    SRA-WAT consistently outperforms 9 representative base trackers by an average of 2.62 in AUC and
+                    3.67 in Precision. The evaluated trackers cover diverse mainstream architectures, including
+                    single-stream, dual-stream, multi-stage, and state-space-based designs. The universal performance
+                    gains across all tracker variants strongly validate the generalizability and tracker-agnostic
+                    efficacy of our SRA-WAT framework.
+                </p>
+            </div>
+        </div>
     </section>
 
-    <section class="section compact" id="results">
-        <div class="section-kicker">Results</div>
-        <h2>Experimental Results</h2>
-        <p>
-            On WATB, source-only DeiT-Tiny achieves 47.61% AUC and 51.96% Precision. Direct training with Wildlife-LT
-            increases these scores to 48.54% and 53.03%. With SRA-WAT, they further increase to 50.43% and 56.12%,
-            corresponding to gains of 2.82 and 4.16 points over source-only training and additional gains of 1.89 and
-            3.09 points over direct target-domain data mixing. Across the nine evaluated trackers, direct Wildlife-LT
-            training yields mean gains of 1.35 AUC points and 2.27 Precision points, whereas SRA-WAT increases the mean
-            gains to 2.62 and 3.67 points—an additional 1.27 AUC and 1.40 Precision points.
-        </p>
-
-        <div class="results-table-shell" role="region" aria-label="WATB main results" tabindex="0">
-            <table class="results-table">
-                <caption>Comparison on WATB. P denotes precision. ΔAUC and ΔP report absolute percentage-point gains
-                    over the corresponding Base model, with relative gains shown in parentheses.
-                </caption>
-                <thead>
-                <tr>
-                    <th scope="col">Tracker</th>
-                    <th scope="col">Publication</th>
-                    <th scope="col">Training setting</th>
-                    <th scope="col">AUC (%) <span aria-hidden="true">↑</span></th>
-                    <th scope="col">P (%) <span aria-hidden="true">↑</span></th>
-                    <th scope="col">ΔAUC <span aria-hidden="true">↑</span></th>
-                    <th scope="col">ΔP <span aria-hidden="true">↑</span></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr class="tracker-group-start">
-                    <th class="tracker-name" scope="rowgroup" rowspan="3">DeiT-Tiny</th>
-                    <td rowspan="3">—</td>
-                    <th scope="row">Base</th>
-                    <td>47.61</td>
-                    <td>51.96</td>
-                    <td>—</td>
-                    <td>—</td>
-                </tr>
-                <tr>
-                    <th scope="row">+Wildlife-LT</th>
-                    <td>48.54</td>
-                    <td>53.03</td>
-                    <td>+0.93 (+1.95%)</td>
-                    <td>+1.07 (+2.06%)</td>
-                </tr>
-                <tr class="srawat-result">
-                    <th scope="row">+SRA-WAT</th>
-                    <td>50.43</td>
-                    <td>56.12</td>
-                    <td><strong>+2.82 (+5.92%)</strong></td>
-                    <td><strong>+4.16 (+8.01%)</strong></td>
-                </tr>
-
-                <tr class="tracker-group-start">
-                    <th class="tracker-name" scope="rowgroup" rowspan="3">SpikeTrack</th>
-                    <td rowspan="3">CVPR '26</td>
-                    <th scope="row">Base</th>
-                    <td>50.86</td>
-                    <td>57.13</td>
-                    <td>—</td>
-                    <td>—</td>
-                </tr>
-                <tr>
-                    <th scope="row">+Wildlife-LT</th>
-                    <td>51.54</td>
-                    <td>58.07</td>
-                    <td>+0.68 (+1.34%)</td>
-                    <td>+0.94 (+1.65%)</td>
-                </tr>
-                <tr class="srawat-result">
-                    <th scope="row">+SRA-WAT</th>
-                    <td>52.86</td>
-                    <td>60.71</td>
-                    <td><strong>+2.00 (+3.93%)</strong></td>
-                    <td><strong>+3.58 (+6.27%)</strong></td>
-                </tr>
-
-                <tr class="tracker-group-start">
-                    <th class="tracker-name" scope="rowgroup" rowspan="3">SSTrack</th>
-                    <td rowspan="3">IJCAI '25</td>
-                    <th scope="row">Base</th>
-                    <td>52.42</td>
-                    <td>61.72</td>
-                    <td>—</td>
-                    <td>—</td>
-                </tr>
-                <tr>
-                    <th scope="row">+Wildlife-LT</th>
-                    <td>52.47</td>
-                    <td>62.05</td>
-                    <td>+0.05 (+0.10%)</td>
-                    <td>+0.33 (+0.53%)</td>
-                </tr>
-                <tr class="srawat-result">
-                    <th scope="row">+SRA-WAT</th>
-                    <td>54.92</td>
-                    <td>63.18</td>
-                    <td><strong>+2.50 (+4.77%)</strong></td>
-                    <td><strong>+1.46 (+2.37%)</strong></td>
-                </tr>
-
-                <tr class="tracker-group-start">
-                    <th class="tracker-name" scope="rowgroup" rowspan="3">LMTrack</th>
-                    <td rowspan="3">AAAI '25</td>
-                    <th scope="row">Base</th>
-                    <td>51.16</td>
-                    <td>56.65</td>
-                    <td>—</td>
-                    <td>—</td>
-                </tr>
-                <tr>
-                    <th scope="row">+Wildlife-LT</th>
-                    <td>52.65</td>
-                    <td>59.49</td>
-                    <td>+1.49 (+2.91%)</td>
-                    <td>+2.84 (+5.01%)</td>
-                </tr>
-                <tr class="srawat-result">
-                    <th scope="row">+SRA-WAT</th>
-                    <td>53.12</td>
-                    <td>59.89</td>
-                    <td><strong>+1.96 (+3.83%)</strong></td>
-                    <td><strong>+3.24 (+5.72%)</strong></td>
-                </tr>
-
-                <tr class="tracker-group-start">
-                    <th class="tracker-name" scope="rowgroup" rowspan="3">MCITrack-B</th>
-                    <td rowspan="3">AAAI '25</td>
-                    <th scope="row">Base</th>
-                    <td>53.57</td>
-                    <td>59.36</td>
-                    <td>—</td>
-                    <td>—</td>
-                </tr>
-                <tr>
-                    <th scope="row">+Wildlife-LT</th>
-                    <td>56.25</td>
-                    <td>63.83</td>
-                    <td>+2.68 (+5.00%)</td>
-                    <td>+4.47 (+7.53%)</td>
-                </tr>
-                <tr class="srawat-result">
-                    <th scope="row">+SRA-WAT</th>
-                    <td>57.56</td>
-                    <td>65.41</td>
-                    <td><strong>+3.99 (+7.45%)</strong></td>
-                    <td><strong>+6.05 (+10.19%)</strong></td>
-                </tr>
-
-                <tr class="tracker-group-start">
-                    <th class="tracker-name" scope="rowgroup" rowspan="3">AsymTrack-T</th>
-                    <td rowspan="3">AAAI '25</td>
-                    <th scope="row">Base</th>
-                    <td>49.12</td>
-                    <td>54.02</td>
-                    <td>—</td>
-                    <td>—</td>
-                </tr>
-                <tr>
-                    <th scope="row">+Wildlife-LT</th>
-                    <td>49.91</td>
-                    <td>54.96</td>
-                    <td>+0.79 (+1.61%)</td>
-                    <td>+0.94 (+1.74%)</td>
-                </tr>
-                <tr class="srawat-result">
-                    <th scope="row">+SRA-WAT</th>
-                    <td>51.66</td>
-                    <td>56.87</td>
-                    <td><strong>+2.54 (+5.17%)</strong></td>
-                    <td><strong>+2.85 (+5.28%)</strong></td>
-                </tr>
-
-                <tr class="tracker-group-start">
-                    <th class="tracker-name" scope="rowgroup" rowspan="3">ODTrack-B</th>
-                    <td rowspan="3">AAAI '24</td>
-                    <th scope="row">Base</th>
-                    <td>55.09</td>
-                    <td>61.48</td>
-                    <td>—</td>
-                    <td>—</td>
-                </tr>
-                <tr>
-                    <th scope="row">+Wildlife-LT</th>
-                    <td>56.52</td>
-                    <td>64.54</td>
-                    <td>+1.43 (+2.60%)</td>
-                    <td>+3.06 (+4.98%)</td>
-                </tr>
-                <tr class="srawat-result">
-                    <th scope="row">+SRA-WAT</th>
-                    <td>57.32</td>
-                    <td>65.15</td>
-                    <td><strong>+2.23 (+4.05%)</strong></td>
-                    <td><strong>+3.67 (+5.97%)</strong></td>
-                </tr>
-
-                <tr class="tracker-group-start">
-                    <th class="tracker-name" scope="rowgroup" rowspan="3">OSTrack-B</th>
-                    <td rowspan="3">ECCV '22</td>
-                    <th scope="row">Base</th>
-                    <td>48.85</td>
-                    <td>52.97</td>
-                    <td>—</td>
-                    <td>—</td>
-                </tr>
-                <tr>
-                    <th scope="row">+Wildlife-LT</th>
-                    <td>50.83</td>
-                    <td>55.96</td>
-                    <td>+1.98 (+4.05%)</td>
-                    <td>+2.99 (+5.64%)</td>
-                </tr>
-                <tr class="srawat-result">
-                    <th scope="row">+SRA-WAT</th>
-                    <td>51.25</td>
-                    <td>56.51</td>
-                    <td><strong>+2.40 (+4.91%)</strong></td>
-                    <td><strong>+3.54 (+6.68%)</strong></td>
-                </tr>
-
-                <tr class="tracker-group-start">
-                    <th class="tracker-name" scope="rowgroup" rowspan="3">TrackingMamba</th>
-                    <td rowspan="3">IEEE JSTARS '24</td>
-                    <th scope="row">Base</th>
-                    <td>45.45</td>
-                    <td>48.61</td>
-                    <td>—</td>
-                    <td>—</td>
-                </tr>
-                <tr>
-                    <th scope="row">+Wildlife-LT</th>
-                    <td>47.58</td>
-                    <td>52.40</td>
-                    <td>+2.13 (+4.69%)</td>
-                    <td>+3.79 (+7.80%)</td>
-                </tr>
-                <tr class="srawat-result">
-                    <th scope="row">+SRA-WAT</th>
-                    <td>48.57</td>
-                    <td>53.11</td>
-                    <td><strong>+3.12 (+6.86%)</strong></td>
-                    <td><strong>+4.50 (+9.26%)</strong></td>
-                </tr>
-                </tbody>
-            </table>
+    <section class="section" id="method" aria-labelledby="method-title">
+        <div class="container section-grid">
+            <h2 id="method-title">Method</h2>
+            <div class="section-main prose">
+                <p>
+                    SRA-WAT performs supervised adaptation from generic source data to Wildlife-LT target data.
+                    Template-search pairs from both domains pass through a shared backbone. SCAH processes the base
+                    tracker's template and search representations, while RGTA operates on its unmodulated final search
+                    representation. This backbone-independent design can be integrated into single-stream, dual-stream,
+                    multi-stage, and state-space trackers.
+                </p>
+                <p>
+                    SCAH injects multi-channel Scharr cues into RGB tokens through learnable modulation, confines
+                    adversarial alignment to search representations, and uses source template-search pairs to preserve
+                    category information. RGTA partitions search tokens into foreground, boundary, and background
+                    regions, aligns their prototype distributions using multi-kernel MMD with source-domain
+                    stop-gradient anchors, and preserves foreground-background separation. At inference, SCAH and RGTA
+                    are disabled, leaving the base tracker's inference pipeline, parameter size, FLOPs, and FPS
+                    unchanged.
+                </p>
+            </div>
         </div>
 
-        <div class="figure-grid">
-            <figure>
-                <img src="assets/figures/two_stage_auc_gains.svg" alt="Two-stage AUC gains across trackers">
-                <figcaption>Two-stage AUC gains. Light segments denote gains from directly adding Wildlife-LT; dark
-                    segments denote the additional gains from SRA-WAT under the same target-data setting.
+        <div class="container">
+            <figure class="figure figure-wide framework" data-state="training">
+                <div class="chart-switch framework-switch" role="group" aria-label="Pipeline shown in the figure"
+                     data-switch data-js-only>
+                    <button type="button" value="training" aria-pressed="true">Training</button>
+                    <button type="button" value="inference" aria-pressed="false">Inference</button>
+                </div>
+                <div class="plate">
+                    <div class="framework-stage">
+                        <img src="assets/figures/framework.svg" width="1011" height="668" loading="lazy"
+                             alt="Overview of SRA-WAT, showing joint source- and target-domain tracking supervision, the structural cue alignment head, and region-guided token alignment.">
+                        <span class="framework-overlay" aria-hidden="true">
+                            <span class="framework-mask" style="--x: 50.4%; --y: 34.3%; --w: 34.1%; --h: 20.9%; --delay: 0ms"></span>
+                            <span class="framework-mask" style="--x: 50.4%; --y: 55.95%; --w: 34.1%; --h: 44.05%; --delay: 0ms"></span>
+                            <span class="framework-mask" style="--x: 48.6%; --y: 61.5%; --w: 2.05%; --h: 9%; --delay: 0ms"></span>
+                            <span class="framework-mask" style="--x: 86.2%; --y: 0%; --w: 13.8%; --h: 9.2%; --delay: 120ms"></span>
+                            <span class="framework-mask" style="--x: 86.2%; --y: 12.7%; --w: 13.8%; --h: 87.3%; --delay: 120ms"></span>
+                            <span class="framework-note">Removed at inference</span>
+                        </span>
+                    </div>
+                </div>
+                <figcaption>
+                    <span data-when="training">Overview of SRA-WAT. Source- and target-domain template-search pairs share the base tracker; SCAH and RGTA provide complementary training-only adaptation objectives.</span><span data-when="inference">At
+                        inference, SCAH, RGTA and the training objectives are dropped, so the base tracker runs with its
+                        original parameters, FLOPs and FPS.</span>
                 </figcaption>
             </figure>
-            <figure>
-                <img src="assets/figures/two_stage_precision_gains.svg" alt="Two-stage Precision gains across trackers">
-                <figcaption>Two-stage Precision gains. Light segments denote gains from directly adding Wildlife-LT;
-                    dark segments denote the additional gains from SRA-WAT under the same target-data setting.
-                </figcaption>
-            </figure>
+
+            <ul class="notes-list" aria-label="SRA-WAT framework highlights">
+                <li>
+                    <h3>Shared tracking backbone</h3>
+                    <p>Source-domain and Wildlife-LT template-search pairs train the same base tracker with supervised
+                        localization objectives.</p>
+                </li>
+                <li>
+                    <h3>Complementary alignment</h3>
+                    <p>SCAH determines where alignment operates through structure-guided search alignment, while RGTA
+                        determines what is aligned through foreground, boundary, and background prototypes.</p>
+                </li>
+                <li>
+                    <h3>Zero inference overhead</h3>
+                    <p>SCAH and RGTA are disabled after training, preserving the base tracker's original inference
+                        pipeline, parameter size, FLOPs, and FPS.</p>
+                </li>
+            </ul>
         </div>
     </section>
 
-    <section class="section dataset-band" id="dataset">
-        <div class="section-kicker">Dataset</div>
-        <h2>Wildlife-LT: Long-Term Training Data</h2>
-        <p>
-            Wildlife-LT is a labeled long-term target-domain dataset for supervised domain-adaptive tracking. It has no
-            sequence overlap with WATB, AnimalTrack, or Wildlife2024 and provides frame-level axis-aligned bounding
-            boxes, visibility states, and category labels for reliable template-search sampling and region-aware
-            alignment.
-        </p>
+    <section class="section" id="results" aria-labelledby="results-title">
+        <div class="container section-grid">
+            <h2 id="results-title">Results on WATB</h2>
+            <div class="section-main">
+                <div class="prose">
+                    <p>
+                        On WATB, source-only DeiT-Tiny achieves 47.61% AUC and 51.96% Precision. Direct training with
+                        Wildlife-LT increases these scores to 48.54% and 53.03%. With SRA-WAT, they further increase to
+                        50.43% and 56.12%, corresponding to gains of 2.82 and 4.16 points over source-only training and
+                        additional gains of 1.89 and 3.09 points over direct target-domain data mixing. Across the nine
+                        evaluated trackers, direct Wildlife-LT training yields mean gains of 1.35 AUC points and 2.27
+                        Precision points, whereas SRA-WAT increases the mean gains to 2.62 and 3.67 points—an additional
+                        1.27 AUC and 1.40 Precision points.
+                    </p>
+                </div>
 
-        <div class="stats-grid" aria-label="Wildlife-LT statistics">
-            <div class="stat"><strong>251</strong><span>sequences</span></div>
-            <div class="stat"><strong>38</strong><span>animal categories</span></div>
-            <div class="stat"><strong>392,362</strong><span>annotated frames</span></div>
-            <div class="stat"><strong>1,563.2</strong><span>average frames per sequence</span></div>
-            <div class="stat"><strong>1,399.0</strong><span>median frames per sequence</span></div>
-            <div class="stat"><strong>200</strong><span>sequences longer than 1,000 frames</span></div>
-        </div>
-
-        <figure class="wide-figure">
-            <img src="assets/figures/wildlife-lt-category-pie.svg" alt="Wildlife-LT category distribution">
-            <figcaption>Category distribution of the 251 Wildlife-LT sequences across 38 animal categories.</figcaption>
-        </figure>
-
-        <div class="detail-grid">
-            <article>
-                <h3>Dense Tracking Annotations</h3>
-                <p>Each sequence is annotated frame by frame with axis-aligned boxes, full-occlusion flags, out-of-view
-                    flags, and category labels. These annotations support tracking supervision, reliable template-search
-                    pair sampling, and region-aware token partitioning.</p>
-            </article>
-            <article>
-                <h3>Long Temporal Gaps</h3>
-                <p>All 251 sequences support exact 300-frame sampling gaps, and 200 sequences support 1,000-frame gaps,
-                    yielding 306,594 and 144,012 valid visible template-search pairs, respectively.</p>
-            </article>
-            <article>
-                <h3>Diverse Natural Conditions</h3>
-                <p>Videos are collected from publicly available Internet sources, including video-sharing websites and
-                    social media, and selected to cover non-rigid motion, viewpoint change, scale variation, occlusion,
-                    camera motion, camouflage, and similar-object interference.</p>
-            </article>
-        </div>
-
-        <section class="dataset-subsection" id="annotation">
-            <div class="section-kicker">Annotation</div>
-            <h2>Annotation Protocol and Quality Control</h2>
-            <p>
-                Wildlife-LT was annotated by eight annotators and reviewed by a five-member checking team. Each
-                sequence was assigned to one annotator and subsequently checked against the annotation protocol.
-                Annotations that failed to meet the protocol were returned for correction and rechecked. Annotation,
-                review, and correction took approximately eight months. Videos from WATB, AnimalTrack, and
-                Wildlife2024 were excluded during dataset collection.
-            </p>
-            <p>
-                The annotated target is the same individual throughout each sequence, with a fixed definition of
-                either the whole animal or a designated body part. Bounding boxes tightly enclose the visible target
-                region. Fully occluded and out-of-view frames retain the last visible box as a placeholder and carry
-                the corresponding absence flag.
-            </p>
-        </section>
-
-        <div class="download-inline" id="download">
-            <div>
-                <h3>Download</h3>
-                <p>The Wildlife-LT dataset can be downloaded from Baidu Netdisk. Extraction code: y2Q5.</p>
-            </div>
-            <a class="button primary"
-               href="https://pan.baidu.com/s/12j4nJa2c09WlHHFfq2TF4A?pwd=y2Q5"
-               target="_blank"
-               rel="noopener noreferrer">Download Wildlife-LT</a>
-        </div>
-
-        <section class="dataset-subsection" id="gallery">
-            <div class="section-kicker">Gallery</div>
-            <h2>Representative Wildlife-LT Frames</h2>
-            <p>
-                The gallery presents representative frames sampled from Wildlife-LT, spanning mammals, birds, aquatic
-                animals, insects, and reptiles.
-            </p>
-            <div class="gallery-grid">
-                <figure><img src="assets/dataset/ant.jpg" alt="Ant sequence frame">
-                    <figcaption>Ant</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/antelope.jpg" alt="Antelope sequence frame">
-                    <figcaption>Antelope</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/barracuda.jpg" alt="Barracuda sequence frame">
-                    <figcaption>Barracuda</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/bear.jpg" alt="Bear sequence frame">
-                    <figcaption>Bear</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/bee.jpg" alt="Bee sequence frame">
-                    <figcaption>Bee</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/beetle.jpg" alt="Beetle sequence frame">
-                    <figcaption>Beetle</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/bird.jpg" alt="Bird sequence frame">
-                    <figcaption>Bird</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/boar.jpg" alt="Boar sequence frame">
-                    <figcaption>Boar</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/butterfly.jpg" alt="Butterfly sequence frame">
-                    <figcaption>Butterfly</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/cattle.jpg" alt="Cattle sequence frame">
-                    <figcaption>Cattle</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/chameleon.jpg" alt="Chameleon sequence frame">
-                    <figcaption>Chameleon</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/cheetah.jpg" alt="Cheetah sequence frame">
-                    <figcaption>Cheetah</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/clownfish.jpg" alt="Clownfish sequence frame">
-                    <figcaption>Clownfish</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/crab.jpg" alt="Crab sequence frame">
-                    <figcaption>Crab</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/deer.jpg" alt="Deer sequence frame">
-                    <figcaption>Deer</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/dragonfly.jpg" alt="Dragonfly sequence frame">
-                    <figcaption>Dragonfly</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/duck.jpg" alt="Duck sequence frame">
-                    <figcaption>Duck</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/elephant.jpg" alt="Elephant sequence frame">
-                    <figcaption>Elephant</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/fox.jpg" alt="Fox sequence frame">
-                    <figcaption>Fox</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/frog.jpg" alt="Frog sequence frame">
-                    <figcaption>Frog</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/jellyfish.jpg" alt="Jellyfish sequence frame">
-                    <figcaption>Jellyfish</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/kangaroo.jpg" alt="Kangaroo sequence frame">
-                    <figcaption>Kangaroo</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/lion.jpg" alt="Lion sequence frame">
-                    <figcaption>Lion</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/locust.jpg" alt="Locust sequence frame">
-                    <figcaption>Locust</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/magpie.jpg" alt="Magpie sequence frame">
-                    <figcaption>Magpie</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/mantis.jpg" alt="Mantis sequence frame">
-                    <figcaption>Mantis</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/monkey.jpg" alt="Monkey sequence frame">
-                    <figcaption>Monkey</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/pigeon.jpg" alt="Pigeon sequence frame">
-                    <figcaption>Pigeon</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/ray.jpg" alt="Ray sequence frame">
-                    <figcaption>Ray</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/seagull.jpg" alt="Seagull sequence frame">
-                    <figcaption>Seagull</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/sepia-latimanus.jpg" alt="Sepia-Latimanus sequence frame">
-                    <figcaption>Sepia-Latimanus</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/snail.jpg" alt="Snail sequence frame">
-                    <figcaption>Snail</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/snake.jpg" alt="Snake sequence frame">
-                    <figcaption>Snake</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/spider.jpg" alt="Spider sequence frame">
-                    <figcaption>Spider</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/squirrel.jpg" alt="Squirrel sequence frame">
-                    <figcaption>Squirrel</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/turtle.jpg" alt="Turtle sequence frame">
-                    <figcaption>Turtle</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/wildcat.jpg" alt="Wildcat sequence frame">
-                    <figcaption>Wildcat</figcaption>
-                </figure>
-                <figure><img src="assets/dataset/wolf.jpg" alt="Wolf sequence frame">
-                    <figcaption>Wolf</figcaption>
+                <figure class="chart" data-chart data-state="auc" aria-labelledby="chart-title">
+                    <div class="chart-head">
+                        <h3 class="chart-title" id="chart-title">
+                            <span data-when="auc">AUC</span><span data-when="p">Precision</span> on WATB (%)
+                        </h3>
+                        <div class="chart-switch" role="group" aria-label="Metric shown in the chart" data-switch data-js-only>
+                            <button type="button" value="auc" aria-pressed="true">AUC</button>
+                            <button type="button" value="p" aria-pressed="false">Precision</button>
+                        </div>
+                    </div>
+                    <ul class="chart-legend" aria-hidden="true">
+                        <li><span class="mark mark-base" aria-hidden="true"></span>Base</li>
+                        <li><span class="mark mark-wl" aria-hidden="true"></span>+Wildlife-LT</li>
+                        <li><span class="mark mark-ours" aria-hidden="true"></span>+SRA-WAT</li>
+                    </ul>
+                    <div class="chart-plot" aria-hidden="true">
+                        <div class="chart-grid">
+                            <span class="chart-tick" data-when="auc" style="--v: 45"><span>45</span></span>
+                            <span class="chart-tick" data-when="auc" style="--v: 50"><span>50</span></span>
+                            <span class="chart-tick" data-when="auc" style="--v: 55"><span>55</span></span>
+                            <span class="chart-tick" data-when="p" style="--v: 50"><span>50</span></span>
+                            <span class="chart-tick" data-when="p" style="--v: 55"><span>55</span></span>
+                            <span class="chart-tick" data-when="p" style="--v: 60"><span>60</span></span>
+                            <span class="chart-tick" data-when="p" style="--v: 65"><span>65</span></span>
+                        </div>
+                        <ul class="chart-rows">
+                            <li class="chart-row" style="--i: 0; --auc-base: 47.61; --auc-wl: 48.54; --auc-ours: 50.43; --p-base: 51.96; --p-wl: 53.03; --p-ours: 56.12">
+                                <span class="chart-name">DeiT-Tiny</span>
+                                <span class="chart-track"><span class="chart-span"></span><span class="mark mark-base"></span><span class="mark mark-wl"></span><span class="mark mark-ours"></span><span class="chart-value"><span data-when="auc">50.43</span><span data-when="p">56.12</span></span></span>
+                            </li>
+                            <li class="chart-row" style="--i: 1; --auc-base: 50.86; --auc-wl: 51.54; --auc-ours: 52.86; --p-base: 57.13; --p-wl: 58.07; --p-ours: 60.71">
+                                <span class="chart-name">SpikeTrack</span>
+                                <span class="chart-track"><span class="chart-span"></span><span class="mark mark-base"></span><span class="mark mark-wl"></span><span class="mark mark-ours"></span><span class="chart-value"><span data-when="auc">52.86</span><span data-when="p">60.71</span></span></span>
+                            </li>
+                            <li class="chart-row" style="--i: 2; --auc-base: 52.42; --auc-wl: 52.47; --auc-ours: 54.92; --p-base: 61.72; --p-wl: 62.05; --p-ours: 63.18">
+                                <span class="chart-name">SSTrack</span>
+                                <span class="chart-track"><span class="chart-span"></span><span class="mark mark-base"></span><span class="mark mark-wl"></span><span class="mark mark-ours"></span><span class="chart-value"><span data-when="auc">54.92</span><span data-when="p">63.18</span></span></span>
+                            </li>
+                            <li class="chart-row" style="--i: 3; --auc-base: 51.16; --auc-wl: 52.65; --auc-ours: 53.12; --p-base: 56.65; --p-wl: 59.49; --p-ours: 59.89">
+                                <span class="chart-name">LMTrack</span>
+                                <span class="chart-track"><span class="chart-span"></span><span class="mark mark-base"></span><span class="mark mark-wl"></span><span class="mark mark-ours"></span><span class="chart-value"><span data-when="auc">53.12</span><span data-when="p">59.89</span></span></span>
+                            </li>
+                            <li class="chart-row" style="--i: 4; --auc-base: 53.57; --auc-wl: 56.25; --auc-ours: 57.56; --p-base: 59.36; --p-wl: 63.83; --p-ours: 65.41">
+                                <span class="chart-name">MCITrack-B</span>
+                                <span class="chart-track"><span class="chart-span"></span><span class="mark mark-base"></span><span class="mark mark-wl"></span><span class="mark mark-ours"></span><span class="chart-value"><span data-when="auc">57.56</span><span data-when="p">65.41</span></span></span>
+                            </li>
+                            <li class="chart-row" style="--i: 5; --auc-base: 49.12; --auc-wl: 49.91; --auc-ours: 51.66; --p-base: 54.02; --p-wl: 54.96; --p-ours: 56.87">
+                                <span class="chart-name">AsymTrack-T</span>
+                                <span class="chart-track"><span class="chart-span"></span><span class="mark mark-base"></span><span class="mark mark-wl"></span><span class="mark mark-ours"></span><span class="chart-value"><span data-when="auc">51.66</span><span data-when="p">56.87</span></span></span>
+                            </li>
+                            <li class="chart-row" style="--i: 6; --auc-base: 55.09; --auc-wl: 56.52; --auc-ours: 57.32; --p-base: 61.48; --p-wl: 64.54; --p-ours: 65.15">
+                                <span class="chart-name">ODTrack-B</span>
+                                <span class="chart-track"><span class="chart-span"></span><span class="mark mark-base"></span><span class="mark mark-wl"></span><span class="mark mark-ours"></span><span class="chart-value"><span data-when="auc">57.32</span><span data-when="p">65.15</span></span></span>
+                            </li>
+                            <li class="chart-row" style="--i: 7; --auc-base: 48.85; --auc-wl: 50.83; --auc-ours: 51.25; --p-base: 52.97; --p-wl: 55.96; --p-ours: 56.51">
+                                <span class="chart-name">OSTrack-B</span>
+                                <span class="chart-track"><span class="chart-span"></span><span class="mark mark-base"></span><span class="mark mark-wl"></span><span class="mark mark-ours"></span><span class="chart-value"><span data-when="auc">51.25</span><span data-when="p">56.51</span></span></span>
+                            </li>
+                            <li class="chart-row" style="--i: 8; --auc-base: 45.45; --auc-wl: 47.58; --auc-ours: 48.57; --p-base: 48.61; --p-wl: 52.40; --p-ours: 53.11">
+                                <span class="chart-name">TrackingMamba</span>
+                                <span class="chart-track"><span class="chart-span"></span><span class="mark mark-base"></span><span class="mark mark-wl"></span><span class="mark mark-ours"></span><span class="chart-value"><span data-when="auc">48.57</span><span data-when="p">53.11</span></span></span>
+                            </li>
+                        </ul>
+                    </div>
+                    <figcaption>
+                        Every tracker improves with SRA-WAT. Mean gains over Base are +2.62 AUC and +3.67 Precision,
+                        against +1.35 and +2.27 from adding Wildlife-LT alone. Exact values are in the table below.
+                    </figcaption>
                 </figure>
             </div>
-        </section>
+        </div>
 
-        <section class="dataset-subsection compact" id="attributes">
-            <div class="section-kicker">Attributes</div>
-            <h2>Challenge Distribution</h2>
-            <p>
-                The most frequent Wildlife-LT challenges are deformation, out-of-plane rotation, camera motion, scale
-                variation, and partial occlusion, occurring in 223, 200, 165, 160, and 158 sequences, respectively.
-                Similar-object interference occurs in 109 sequences.
+        <div class="container">
+            <p class="table-caption" id="results-caption">
+                Comparison on WATB. P denotes precision. ΔAUC and ΔP report absolute percentage-point gains over the
+                corresponding Base model, with relative gains shown in parentheses.
             </p>
-            <div class="figure-grid attribute-figure-grid">
-                <figure>
-                    <img src="assets/figures/wildlife-lt-attribute-radar.svg"
-                         alt="Wildlife-LT challenge attribute radar chart">
-                    <figcaption>Distribution of 11 challenge attributes over 251 Wildlife-LT sequences.</figcaption>
-                </figure>
-                <figure>
-                    <img src="assets/figures/wildlife-lt-attribute-chord.svg"
-                         alt="Wildlife-LT challenge attribute co-occurrence chord diagram">
-                    <figcaption>Pairwise co-occurrence of the 11 challenge attributes in Wildlife-LT.</figcaption>
-                </figure>
+            <div class="table-wrap" role="region" aria-labelledby="results-caption" tabindex="0">
+                <table class="results-table" aria-labelledby="results-caption">
+                    <thead>
+                    <tr>
+                        <th scope="col">Tracker</th>
+                        <th scope="col">Publication</th>
+                        <th scope="col">Training setting</th>
+                        <th scope="col">AUC (%)</th>
+                        <th scope="col">P (%)</th>
+                        <th scope="col">ΔAUC</th>
+                        <th scope="col">ΔP</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th class="tracker-name" scope="rowgroup" rowspan="3">DeiT-Tiny</th>
+                        <td class="venue" rowspan="3">—</td>
+                        <th scope="row">Base</th>
+                        <td>47.61</td>
+                        <td>51.96</td>
+                        <td class="empty">—</td>
+                        <td class="empty">—</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">+Wildlife-LT</th>
+                        <td>48.54</td>
+                        <td>53.03</td>
+                        <td>+0.93 <span class="rel">(+1.95%)</span></td>
+                        <td>+1.07 <span class="rel">(+2.06%)</span></td>
+                    </tr>
+                    <tr class="row-ours">
+                        <th scope="row">+SRA-WAT</th>
+                        <td>50.43</td>
+                        <td>56.12</td>
+                        <td>+2.82 <span class="rel">(+5.92%)</span></td>
+                        <td>+4.16 <span class="rel">(+8.01%)</span></td>
+                    </tr>
+
+                    <tr>
+                        <th class="tracker-name" scope="rowgroup" rowspan="3">SpikeTrack</th>
+                        <td class="venue" rowspan="3">CVPR '26</td>
+                        <th scope="row">Base</th>
+                        <td>50.86</td>
+                        <td>57.13</td>
+                        <td class="empty">—</td>
+                        <td class="empty">—</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">+Wildlife-LT</th>
+                        <td>51.54</td>
+                        <td>58.07</td>
+                        <td>+0.68 <span class="rel">(+1.34%)</span></td>
+                        <td>+0.94 <span class="rel">(+1.65%)</span></td>
+                    </tr>
+                    <tr class="row-ours">
+                        <th scope="row">+SRA-WAT</th>
+                        <td>52.86</td>
+                        <td>60.71</td>
+                        <td>+2.00 <span class="rel">(+3.93%)</span></td>
+                        <td>+3.58 <span class="rel">(+6.27%)</span></td>
+                    </tr>
+
+                    <tr>
+                        <th class="tracker-name" scope="rowgroup" rowspan="3">SSTrack</th>
+                        <td class="venue" rowspan="3">IJCAI '25</td>
+                        <th scope="row">Base</th>
+                        <td>52.42</td>
+                        <td>61.72</td>
+                        <td class="empty">—</td>
+                        <td class="empty">—</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">+Wildlife-LT</th>
+                        <td>52.47</td>
+                        <td>62.05</td>
+                        <td>+0.05 <span class="rel">(+0.10%)</span></td>
+                        <td>+0.33 <span class="rel">(+0.53%)</span></td>
+                    </tr>
+                    <tr class="row-ours">
+                        <th scope="row">+SRA-WAT</th>
+                        <td>54.92</td>
+                        <td>63.18</td>
+                        <td>+2.50 <span class="rel">(+4.77%)</span></td>
+                        <td>+1.46 <span class="rel">(+2.37%)</span></td>
+                    </tr>
+
+                    <tr>
+                        <th class="tracker-name" scope="rowgroup" rowspan="3">LMTrack</th>
+                        <td class="venue" rowspan="3">AAAI '25</td>
+                        <th scope="row">Base</th>
+                        <td>51.16</td>
+                        <td>56.65</td>
+                        <td class="empty">—</td>
+                        <td class="empty">—</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">+Wildlife-LT</th>
+                        <td>52.65</td>
+                        <td>59.49</td>
+                        <td>+1.49 <span class="rel">(+2.91%)</span></td>
+                        <td>+2.84 <span class="rel">(+5.01%)</span></td>
+                    </tr>
+                    <tr class="row-ours">
+                        <th scope="row">+SRA-WAT</th>
+                        <td>53.12</td>
+                        <td>59.89</td>
+                        <td>+1.96 <span class="rel">(+3.83%)</span></td>
+                        <td>+3.24 <span class="rel">(+5.72%)</span></td>
+                    </tr>
+
+                    <tr>
+                        <th class="tracker-name" scope="rowgroup" rowspan="3">MCITrack-B</th>
+                        <td class="venue" rowspan="3">AAAI '25</td>
+                        <th scope="row">Base</th>
+                        <td>53.57</td>
+                        <td>59.36</td>
+                        <td class="empty">—</td>
+                        <td class="empty">—</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">+Wildlife-LT</th>
+                        <td>56.25</td>
+                        <td>63.83</td>
+                        <td>+2.68 <span class="rel">(+5.00%)</span></td>
+                        <td>+4.47 <span class="rel">(+7.53%)</span></td>
+                    </tr>
+                    <tr class="row-ours">
+                        <th scope="row">+SRA-WAT</th>
+                        <td>57.56</td>
+                        <td>65.41</td>
+                        <td>+3.99 <span class="rel">(+7.45%)</span></td>
+                        <td>+6.05 <span class="rel">(+10.19%)</span></td>
+                    </tr>
+
+                    <tr>
+                        <th class="tracker-name" scope="rowgroup" rowspan="3">AsymTrack-T</th>
+                        <td class="venue" rowspan="3">AAAI '25</td>
+                        <th scope="row">Base</th>
+                        <td>49.12</td>
+                        <td>54.02</td>
+                        <td class="empty">—</td>
+                        <td class="empty">—</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">+Wildlife-LT</th>
+                        <td>49.91</td>
+                        <td>54.96</td>
+                        <td>+0.79 <span class="rel">(+1.61%)</span></td>
+                        <td>+0.94 <span class="rel">(+1.74%)</span></td>
+                    </tr>
+                    <tr class="row-ours">
+                        <th scope="row">+SRA-WAT</th>
+                        <td>51.66</td>
+                        <td>56.87</td>
+                        <td>+2.54 <span class="rel">(+5.17%)</span></td>
+                        <td>+2.85 <span class="rel">(+5.28%)</span></td>
+                    </tr>
+
+                    <tr>
+                        <th class="tracker-name" scope="rowgroup" rowspan="3">ODTrack-B</th>
+                        <td class="venue" rowspan="3">AAAI '24</td>
+                        <th scope="row">Base</th>
+                        <td>55.09</td>
+                        <td>61.48</td>
+                        <td class="empty">—</td>
+                        <td class="empty">—</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">+Wildlife-LT</th>
+                        <td>56.52</td>
+                        <td>64.54</td>
+                        <td>+1.43 <span class="rel">(+2.60%)</span></td>
+                        <td>+3.06 <span class="rel">(+4.98%)</span></td>
+                    </tr>
+                    <tr class="row-ours">
+                        <th scope="row">+SRA-WAT</th>
+                        <td>57.32</td>
+                        <td>65.15</td>
+                        <td>+2.23 <span class="rel">(+4.05%)</span></td>
+                        <td>+3.67 <span class="rel">(+5.97%)</span></td>
+                    </tr>
+
+                    <tr>
+                        <th class="tracker-name" scope="rowgroup" rowspan="3">OSTrack-B</th>
+                        <td class="venue" rowspan="3">ECCV '22</td>
+                        <th scope="row">Base</th>
+                        <td>48.85</td>
+                        <td>52.97</td>
+                        <td class="empty">—</td>
+                        <td class="empty">—</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">+Wildlife-LT</th>
+                        <td>50.83</td>
+                        <td>55.96</td>
+                        <td>+1.98 <span class="rel">(+4.05%)</span></td>
+                        <td>+2.99 <span class="rel">(+5.64%)</span></td>
+                    </tr>
+                    <tr class="row-ours">
+                        <th scope="row">+SRA-WAT</th>
+                        <td>51.25</td>
+                        <td>56.51</td>
+                        <td>+2.40 <span class="rel">(+4.91%)</span></td>
+                        <td>+3.54 <span class="rel">(+6.68%)</span></td>
+                    </tr>
+
+                    <tr>
+                        <th class="tracker-name" scope="rowgroup" rowspan="3">TrackingMamba</th>
+                        <td class="venue" rowspan="3">IEEE JSTARS '24</td>
+                        <th scope="row">Base</th>
+                        <td>45.45</td>
+                        <td>48.61</td>
+                        <td class="empty">—</td>
+                        <td class="empty">—</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">+Wildlife-LT</th>
+                        <td>47.58</td>
+                        <td>52.40</td>
+                        <td>+2.13 <span class="rel">(+4.69%)</span></td>
+                        <td>+3.79 <span class="rel">(+7.80%)</span></td>
+                    </tr>
+                    <tr class="row-ours">
+                        <th scope="row">+SRA-WAT</th>
+                        <td>48.57</td>
+                        <td>53.11</td>
+                        <td>+3.12 <span class="rel">(+6.86%)</span></td>
+                        <td>+4.50 <span class="rel">(+9.26%)</span></td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
-            <div class="attribute-glossary" aria-label="Challenge attribute abbreviations">
-                <p>We annotate sequences at the sequence level for the 11 challenge attributes represented in
-                    Wildlife-LT.</p>
-                <dl>
-                    <div>
-                        <dt>IV</dt>
-                        <dd>Illumination variation during tracking.</dd>
-                    </div>
-                    <div>
-                        <dt>IPR</dt>
-                        <dd>In-plane rotation of the target.</dd>
-                    </div>
-                    <div>
-                        <dt>OPR</dt>
-                        <dd>Out-of-plane rotation of the target.</dd>
-                    </div>
-                    <div>
-                        <dt>DEF</dt>
-                        <dd>Deformation or shape change of the target.</dd>
-                    </div>
-                    <div>
-                        <dt>SV</dt>
-                        <dd>Target scale variation outside the interval [0.5, 2].</dd>
-                    </div>
-                    <div>
-                        <dt>CM</dt>
-                        <dd>Camera switching or sudden camera motion.</dd>
-                    </div>
-                    <div>
-                        <dt>OV</dt>
-                        <dd>Out-of-view target disappearance.</dd>
-                    </div>
-                    <div>
-                        <dt>FOC</dt>
-                        <dd>Full occlusion of the target.</dd>
-                    </div>
-                    <div>
-                        <dt>POC</dt>
-                        <dd>Partial occlusion of the target.</dd>
-                    </div>
-                    <div>
-                        <dt>SOB</dt>
-                        <dd>Similar objects appearing in the background.</dd>
-                    </div>
-                    <div>
-                        <dt>MB</dt>
-                        <dd>Motion blur caused by camera shake or target motion.</dd>
-                    </div>
+        </div>
+    </section>
+
+    <section class="section" id="dataset" aria-labelledby="dataset-title">
+        <div class="container section-grid">
+            <h2 id="dataset-title">Wildlife-LT</h2>
+            <div class="section-main">
+                <div class="prose">
+                    <p>
+                        Wildlife-LT is a labeled long-term target-domain dataset for supervised domain-adaptive
+                        tracking. It has no sequence overlap with WATB, AnimalTrack, or Wildlife2024 and provides
+                        frame-level axis-aligned bounding boxes, visibility states, and category labels for reliable
+                        template-search sampling and region-aware alignment.
+                    </p>
+                </div>
+
+                <dl class="stats" aria-label="Wildlife-LT statistics">
+                    <div class="stat"><dt>sequences</dt><dd>251</dd></div>
+                    <div class="stat"><dt>animal categories</dt><dd>38</dd></div>
+                    <div class="stat"><dt>annotated frames</dt><dd>392,362</dd></div>
+                    <div class="stat"><dt>average frames per sequence</dt><dd>1,563.2</dd></div>
+                    <div class="stat"><dt>median frames per sequence</dt><dd>1,399.0</dd></div>
+                    <div class="stat"><dt>sequences longer than 1,000 frames</dt><dd>200</dd></div>
                 </dl>
+
+                <figure class="figure figure-pie">
+                    <div class="plate">
+                        <img src="assets/figures/wildlife-lt-category-pie.svg" width="692" height="393" loading="lazy"
+                             alt="Wildlife-LT category distribution">
+                    </div>
+                    <figcaption>Category distribution of the 251 Wildlife-LT sequences across 38 animal categories.</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="container">
+            <ul class="notes-list" aria-label="Wildlife-LT properties">
+                <li>
+                    <h3>Dense tracking annotations</h3>
+                    <p>Each sequence is annotated frame by frame with axis-aligned boxes, full-occlusion flags,
+                        out-of-view flags, and category labels. These annotations support tracking supervision, reliable
+                        template-search pair sampling, and region-aware token partitioning.</p>
+                </li>
+                <li>
+                    <h3>Long temporal gaps</h3>
+                    <p>All 251 sequences support exact 300-frame sampling gaps, and 200 sequences support 1,000-frame
+                        gaps, yielding 306,594 and 144,012 valid visible template-search pairs, respectively.</p>
+                </li>
+                <li>
+                    <h3>Diverse natural conditions</h3>
+                    <p>Videos are collected from publicly available Internet sources, including video-sharing websites
+                        and social media, and selected to cover non-rigid motion, viewpoint change, scale variation,
+                        occlusion, camera motion, camouflage, and similar-object interference.</p>
+                </li>
+            </ul>
+        </div>
+
+        <section class="subsection" id="annotation" aria-labelledby="annotation-title">
+            <div class="container section-grid">
+                <h3 id="annotation-title">Annotation protocol and quality control</h3>
+                <div class="section-main prose">
+                    <p>
+                        Wildlife-LT was annotated by eight annotators and reviewed by a five-member checking team. Each
+                        sequence was assigned to one annotator and subsequently checked against the annotation
+                        protocol. Annotations that failed to meet the protocol were returned for correction and
+                        rechecked. Annotation, review, and correction took approximately eight months. Videos from
+                        WATB, AnimalTrack, and Wildlife2024 were excluded during dataset collection.
+                    </p>
+                    <p>
+                        The annotated target is the same individual throughout each sequence, with a fixed definition
+                        of either the whole animal or a designated body part. Bounding boxes tightly enclose the visible
+                        target region. Fully occluded and out-of-view frames retain the last visible box as a
+                        placeholder and carry the corresponding absence flag.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="subsection" id="download" aria-labelledby="download-title">
+            <div class="container section-grid">
+                <h3 id="download-title">Download</h3>
+                <div class="section-main download">
+                    <p>Wildlife-LT is available from Baidu Netdisk. Extraction code: <code>y2Q5</code></p>
+                    <a class="button button-primary" href="https://pan.baidu.com/s/12j4nJa2c09WlHHFfq2TF4A?pwd=y2Q5"
+                       target="_blank" rel="noopener noreferrer">
+                        <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19.5h14"/>
+                        </svg>
+                        Download Wildlife-LT<span class="visually-hidden"> (opens Baidu Netdisk in a new tab)</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section class="subsection" id="gallery" aria-labelledby="gallery-title">
+            <div class="container section-grid">
+                <h3 id="gallery-title">Representative frames</h3>
+                <div class="section-main prose">
+                    <p>
+                        One frame from each of the 38 Wildlife-LT categories, spanning mammals, birds, aquatic animals,
+                        insects, and reptiles. Select a frame to view it at full size.
+                    </p>
+                </div>
+            </div>
+            <div class="container">
+                <ul class="sheet">
+                    <li><a href="assets/dataset/ant.jpg" data-frame="Ant"><span class="sheet-thumb"><img src="assets/dataset/thumbs/ant.jpg" width="400" height="225" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Ant</span></a></li>
+                    <li><a href="assets/dataset/antelope.jpg" data-frame="Antelope"><span class="sheet-thumb"><img src="assets/dataset/thumbs/antelope.jpg" width="400" height="212" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Antelope</span></a></li>
+                    <li><a href="assets/dataset/barracuda.jpg" data-frame="Barracuda"><span class="sheet-thumb"><img src="assets/dataset/thumbs/barracuda.jpg" width="400" height="225" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Barracuda</span></a></li>
+                    <li><a href="assets/dataset/bear.jpg" data-frame="Bear"><span class="sheet-thumb"><img src="assets/dataset/thumbs/bear.jpg" width="400" height="225" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Bear</span></a></li>
+                    <li><a href="assets/dataset/bee.jpg" data-frame="Bee"><span class="sheet-thumb"><img src="assets/dataset/thumbs/bee.jpg" width="400" height="225" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Bee</span></a></li>
+                    <li><a href="assets/dataset/beetle.jpg" data-frame="Beetle"><span class="sheet-thumb"><img src="assets/dataset/thumbs/beetle.jpg" width="400" height="225" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Beetle</span></a></li>
+                    <li><a href="assets/dataset/bird.jpg" data-frame="Bird"><span class="sheet-thumb"><img src="assets/dataset/thumbs/bird.jpg" width="400" height="215" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Bird</span></a></li>
+                    <li><a href="assets/dataset/boar.jpg" data-frame="Boar"><span class="sheet-thumb"><img src="assets/dataset/thumbs/boar.jpg" width="400" height="225" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Boar</span></a></li>
+                    <li><a href="assets/dataset/butterfly.jpg" data-frame="Butterfly"><span class="sheet-thumb"><img src="assets/dataset/thumbs/butterfly.jpg" width="400" height="225" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Butterfly</span></a></li>
+                    <li><a href="assets/dataset/cattle.jpg" data-frame="Cattle"><span class="sheet-thumb"><img src="assets/dataset/thumbs/cattle.jpg" width="400" height="252" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Cattle</span></a></li>
+                    <li><a href="assets/dataset/chameleon.jpg" data-frame="Chameleon"><span class="sheet-thumb"><img src="assets/dataset/thumbs/chameleon.jpg" width="400" height="160" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Chameleon</span></a></li>
+                    <li><a href="assets/dataset/cheetah.jpg" data-frame="Cheetah"><span class="sheet-thumb"><img src="assets/dataset/thumbs/cheetah.jpg" width="400" height="225" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Cheetah</span></a></li>
+                    <li><a href="assets/dataset/clownfish.jpg" data-frame="Clownfish"><span class="sheet-thumb"><img src="assets/dataset/thumbs/clownfish.jpg" width="400" height="225" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Clownfish</span></a></li>
+                    <li><a href="assets/dataset/crab.jpg" data-frame="Crab"><span class="sheet-thumb"><img src="assets/dataset/thumbs/crab.jpg" width="400" height="225" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Crab</span></a></li>
+                    <li><a href="assets/dataset/deer.jpg" data-frame="Deer"><span class="sheet-thumb"><img src="assets/dataset/thumbs/deer.jpg" width="400" height="225" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Deer</span></a></li>
+                    <li><a href="assets/dataset/dragonfly.jpg" data-frame="Dragonfly"><span class="sheet-thumb"><img src="assets/dataset/thumbs/dragonfly.jpg" width="400" height="225" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Dragonfly</span></a></li>
+                    <li><a href="assets/dataset/duck.jpg" data-frame="Duck"><span class="sheet-thumb"><img src="assets/dataset/thumbs/duck.jpg" width="400" height="178" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Duck</span></a></li>
+                    <li><a href="assets/dataset/elephant.jpg" data-frame="Elephant"><span class="sheet-thumb"><img src="assets/dataset/thumbs/elephant.jpg" width="400" height="230" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Elephant</span></a></li>
+                    <li><a href="assets/dataset/fox.jpg" data-frame="Fox"><span class="sheet-thumb"><img src="assets/dataset/thumbs/fox.jpg" width="400" height="170" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Fox</span></a></li>
+                    <li><a href="assets/dataset/frog.jpg" data-frame="Frog"><span class="sheet-thumb"><img src="assets/dataset/thumbs/frog.jpg" width="400" height="225" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Frog</span></a></li>
+                    <li><a href="assets/dataset/jellyfish.jpg" data-frame="Jellyfish"><span class="sheet-thumb"><img src="assets/dataset/thumbs/jellyfish.jpg" width="400" height="226" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Jellyfish</span></a></li>
+                    <li><a href="assets/dataset/kangaroo.jpg" data-frame="Kangaroo"><span class="sheet-thumb"><img src="assets/dataset/thumbs/kangaroo.jpg" width="400" height="225" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Kangaroo</span></a></li>
+                    <li><a href="assets/dataset/lion.jpg" data-frame="Lion"><span class="sheet-thumb"><img src="assets/dataset/thumbs/lion.jpg" width="400" height="227" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Lion</span></a></li>
+                    <li><a href="assets/dataset/locust.jpg" data-frame="Locust"><span class="sheet-thumb"><img src="assets/dataset/thumbs/locust.jpg" width="400" height="230" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Locust</span></a></li>
+                    <li><a href="assets/dataset/magpie.jpg" data-frame="Magpie"><span class="sheet-thumb"><img src="assets/dataset/thumbs/magpie.jpg" width="400" height="225" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Magpie</span></a></li>
+                    <li><a href="assets/dataset/mantis.jpg" data-frame="Mantis"><span class="sheet-thumb"><img src="assets/dataset/thumbs/mantis.jpg" width="400" height="225" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Mantis</span></a></li>
+                    <li><a href="assets/dataset/monkey.jpg" data-frame="Monkey"><span class="sheet-thumb"><img src="assets/dataset/thumbs/monkey.jpg" width="400" height="225" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Monkey</span></a></li>
+                    <li><a href="assets/dataset/pigeon.jpg" data-frame="Pigeon"><span class="sheet-thumb"><img src="assets/dataset/thumbs/pigeon.jpg" width="400" height="225" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Pigeon</span></a></li>
+                    <li><a href="assets/dataset/ray.jpg" data-frame="Ray"><span class="sheet-thumb"><img src="assets/dataset/thumbs/ray.jpg" width="400" height="224" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Ray</span></a></li>
+                    <li><a href="assets/dataset/seagull.jpg" data-frame="Seagull"><span class="sheet-thumb"><img src="assets/dataset/thumbs/seagull.jpg" width="400" height="225" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Seagull</span></a></li>
+                    <li><a href="assets/dataset/sepia-latimanus.jpg" data-frame="Sepia-Latimanus"><span class="sheet-thumb"><img src="assets/dataset/thumbs/sepia-latimanus.jpg" width="400" height="225" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Sepia-Latimanus</span></a></li>
+                    <li><a href="assets/dataset/snail.jpg" data-frame="Snail"><span class="sheet-thumb"><img src="assets/dataset/thumbs/snail.jpg" width="400" height="225" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Snail</span></a></li>
+                    <li><a href="assets/dataset/snake.jpg" data-frame="Snake"><span class="sheet-thumb"><img src="assets/dataset/thumbs/snake.jpg" width="400" height="216" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Snake</span></a></li>
+                    <li><a href="assets/dataset/spider.jpg" data-frame="Spider"><span class="sheet-thumb"><img src="assets/dataset/thumbs/spider.jpg" width="400" height="225" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Spider</span></a></li>
+                    <li><a href="assets/dataset/squirrel.jpg" data-frame="Squirrel"><span class="sheet-thumb"><img src="assets/dataset/thumbs/squirrel.jpg" width="400" height="225" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Squirrel</span></a></li>
+                    <li><a href="assets/dataset/turtle.jpg" data-frame="Turtle"><span class="sheet-thumb"><img src="assets/dataset/thumbs/turtle.jpg" width="400" height="225" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Turtle</span></a></li>
+                    <li><a href="assets/dataset/wildcat.jpg" data-frame="Wildcat"><span class="sheet-thumb"><img src="assets/dataset/thumbs/wildcat.jpg" width="400" height="225" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Wildcat</span></a></li>
+                    <li><a href="assets/dataset/wolf.jpg" data-frame="Wolf"><span class="sheet-thumb"><img src="assets/dataset/thumbs/wolf.jpg" width="400" height="225" loading="lazy" decoding="async" alt=""></span><span class="sheet-name">Wolf</span></a></li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="subsection" id="attributes" aria-labelledby="attributes-title">
+            <div class="container section-grid">
+                <h3 id="attributes-title">Challenge attributes</h3>
+                <div class="section-main">
+                    <div class="prose">
+                        <p>
+                            The most frequent Wildlife-LT challenges are deformation, out-of-plane rotation, camera
+                            motion, scale variation, and partial occlusion, occurring in 223, 200, 165, 160, and 158
+                            sequences, respectively. Similar-object interference occurs in 109 sequences.
+                        </p>
+                    </div>
+                    <div class="figure-pair figure-pair-square">
+                        <figure class="figure">
+                            <div class="plate">
+                                <img src="assets/figures/wildlife-lt-attribute-radar.svg" width="301" height="292" loading="lazy"
+                                     alt="Wildlife-LT challenge attribute radar chart">
+                            </div>
+                            <figcaption>Distribution of 11 challenge attributes over 251 Wildlife-LT sequences.</figcaption>
+                        </figure>
+                        <figure class="figure">
+                            <div class="plate">
+                                <img src="assets/figures/wildlife-lt-attribute-chord.svg" width="273" height="273" loading="lazy"
+                                     alt="Wildlife-LT challenge attribute co-occurrence chord diagram">
+                            </div>
+                            <figcaption>Pairwise co-occurrence of the 11 challenge attributes in Wildlife-LT.</figcaption>
+                        </figure>
+                    </div>
+                    <p class="glossary-intro">
+                        We annotate sequences at the sequence level for the 11 challenge attributes represented in
+                        Wildlife-LT.
+                    </p>
+                    <dl class="glossary" aria-label="Challenge attribute abbreviations">
+                        <div><dt>IV</dt><dd>Illumination variation during tracking.</dd></div>
+                        <div><dt>IPR</dt><dd>In-plane rotation of the target.</dd></div>
+                        <div><dt>OPR</dt><dd>Out-of-plane rotation of the target.</dd></div>
+                        <div><dt>DEF</dt><dd>Deformation or shape change of the target.</dd></div>
+                        <div><dt>SV</dt><dd>Target scale variation outside the interval [0.5, 2].</dd></div>
+                        <div><dt>CM</dt><dd>Camera switching or sudden camera motion.</dd></div>
+                        <div><dt>OV</dt><dd>Out-of-view target disappearance.</dd></div>
+                        <div><dt>FOC</dt><dd>Full occlusion of the target.</dd></div>
+                        <div><dt>POC</dt><dd>Partial occlusion of the target.</dd></div>
+                        <div><dt>SOB</dt><dd>Similar objects appearing in the background.</dd></div>
+                        <div><dt>MB</dt><dd>Motion blur caused by camera shake or target motion.</dd></div>
+                    </dl>
+                </div>
             </div>
         </section>
     </section>
 
-    <section class="section compact" id="bibtex">
-        <div class="section-kicker">Citation</div>
-        <h2>BibTeX</h2>
-        <pre><code>@misc{srawat2026wildlifelt,
+    <section class="section" id="bibtex" aria-labelledby="bibtex-title">
+        <div class="container section-grid">
+            <h2 id="bibtex-title">Citation</h2>
+            <div class="section-main">
+                <div class="bibtex-block">
+                    <button class="button button-small copy-button" type="button" data-copy="bibtex-code" data-js-only>
+                        <svg class="line-icon icon-copy" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <rect x="8.5" y="8.5" width="11" height="11" rx="1.5"/>
+                            <path d="M15.5 8.5V6A1.5 1.5 0 0 0 14 4.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"/>
+                        </svg>
+                        <svg class="line-icon icon-done" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="M5 12.5 10 17.5 19 7"/>
+                        </svg>
+                        <span data-copy-label>Copy</span><span class="visually-hidden"> BibTeX</span>
+                    </button>
+                    <span class="visually-hidden" role="status" data-copy-status></span>
+                    <pre class="bibtex" tabindex="0" aria-label="BibTeX entry"><code id="bibtex-code">@misc{srawat2026wildlifelt,
   title  = {Toward a General Structure- and Region-Aware Domain Adaptation Framework for Wild Animal Tracking},
   author = {Yan, Ziqing and Wang, Fasheng and Wang, Mengyin and Shi, Zhan and Chen, Fangmei and Li, Haojie},
   year   = {2026},
   url    = {https://yanziqing25.github.io/SRA-WAT},
   note   = {Project page and code repository}
 }</code></pre>
+                </div>
+            </div>
+        </div>
     </section>
 </main>
 
-<footer class="footer">
-    <p>&copy; SRA-WAT Project Team. All rights reserved.</p>
+<footer class="site-footer">
+    <div class="container footer-row">
+        <p>&copy; SRA-WAT Project Team. All rights reserved.</p>
+        <a class="back-to-top" href="#paper">
+            Back to top
+            <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 19V5M6.5 10.5 12 5l5.5 5.5"/>
+            </svg>
+        </a>
+    </div>
 </footer>
+
+<dialog class="viewer" data-viewer aria-labelledby="viewer-title">
+    <figure class="viewer-figure">
+        <img data-viewer-img src="" alt="">
+        <figcaption class="viewer-bar">
+            <span>
+                <span class="viewer-title" id="viewer-title" data-viewer-title></span>
+                <span class="viewer-count" data-viewer-count></span>
+            </span>
+            <span class="viewer-controls">
+                <button class="button button-small" type="button" data-viewer-prev>
+                    <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M14.5 6 8.5 12l6 6"/>
+                    </svg>
+                    Previous
+                </button>
+                <button class="button button-small" type="button" data-viewer-next autofocus>
+                    Next
+                    <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M9.5 6l6 6-6 6"/>
+                    </svg>
+                </button>
+                <button class="button button-small button-primary" type="button" data-viewer-close>
+                    <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/>
+                    </svg>
+                    Close
+                </button>
+            </span>
+        </figcaption>
+    </figure>
+</dialog>
 </body>
 </html>
